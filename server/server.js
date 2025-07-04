@@ -2,7 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import 'dotenv/config';
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
 
 import connectDB from './config/database.js';
 import errorHandler from './middleware/errorHandler.js';
@@ -13,6 +16,12 @@ import funnelRoutes from './routes/funnels.js';
 import analyticsRoutes from './routes/analytics.js';
 import templateRoutes from './routes/templates.js';
 import userRoutes from './routes/users.js';
+
+// Debug environment variables
+console.log('Environment check:');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('MONGODB_URI:', process.env.MONGODB_URI ? 'Set' : 'Missing');
+console.log('JWT_SECRET:', process.env.JWT_SECRET ? 'Set' : 'Missing');
 
 // Connect to database
 connectDB();
