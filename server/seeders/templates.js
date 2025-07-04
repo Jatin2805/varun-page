@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const Template = require('../models/Template');
-require('dotenv').config();
+import mongoose from 'mongoose';
+import Template from '../models/Template.js';
+import 'dotenv/config';
 
 const templates = [
   {
