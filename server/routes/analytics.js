@@ -1,7 +1,7 @@
-const express = require('express');
-const Analytics = require('../models/Analytics');
-const Funnel = require('../models/Funnel');
-const auth = require('../middleware/auth');
+import express from 'express';
+import Analytics from '../models/Analytics.js';
+import Funnel from '../models/Funnel.js';
+import auth from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -211,4 +211,4 @@ router.post('/track', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

@@ -1,6 +1,6 @@
-const express = require('express');
-const Template = require('../models/Template');
-const auth = require('../middleware/auth');
+import express from 'express';
+import Template from '../models/Template.js';
+import auth from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -102,4 +102,4 @@ router.post('/:id/use', auth, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

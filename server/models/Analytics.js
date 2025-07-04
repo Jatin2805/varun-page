@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const analyticsSchema = new mongoose.Schema({
   funnel: {
@@ -72,4 +72,4 @@ const analyticsSchema = new mongoose.Schema({
 analyticsSchema.index({ funnel: 1, date: 1 });
 analyticsSchema.index({ user: 1, date: 1 });
 
-module.exports = mongoose.model('Analytics', analyticsSchema);
+export default mongoose.model('Analytics', analyticsSchema);

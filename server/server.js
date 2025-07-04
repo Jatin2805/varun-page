@@ -1,18 +1,18 @@
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import 'dotenv/config';
 
-const connectDB = require('./config/database');
-const errorHandler = require('./middleware/errorHandler');
+import connectDB from './config/database.js';
+import errorHandler from './middleware/errorHandler.js';
 
 // Route imports
-const authRoutes = require('./routes/auth');
-const funnelRoutes = require('./routes/funnels');
-const analyticsRoutes = require('./routes/analytics');
-const templateRoutes = require('./routes/templates');
-const userRoutes = require('./routes/users');
+import authRoutes from './routes/auth.js';
+import funnelRoutes from './routes/funnels.js';
+import analyticsRoutes from './routes/analytics.js';
+import templateRoutes from './routes/templates.js';
+import userRoutes from './routes/users.js';
 
 // Connect to database
 connectDB();
@@ -80,4 +80,4 @@ process.on('unhandledRejection', (err, promise) => {
   });
 });
 
-module.exports = app;
+export default app;

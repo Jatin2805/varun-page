@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const stepSchema = new mongoose.Schema({
   id: {
@@ -103,4 +103,4 @@ funnelSchema.pre('save', function(next) {
   next();
 });
 
-module.exports = mongoose.model('Funnel', funnelSchema);
+export default mongoose.model('Funnel', funnelSchema);
