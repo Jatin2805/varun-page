@@ -46,7 +46,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const initAuth = async () => {
       if (token) {
         try {
+          console.log('Initializing auth with token:', token ? 'present' : 'missing');
           const response = await authAPI.getProfile();
+          console.log('Auth profile response:', response);
           setUser(response.user);
         } catch (error) {
           console.error('Auth initialization error:', error);
@@ -62,7 +64,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string) => {
     try {
+      console.log('Attempting login for:', email);
       const response = await authAPI.login({ email, password });
+      console.log('Login response:', response);
       const { token: newToken, user: userData } = response;
       
       localStorage.setItem('token', newToken);
@@ -80,7 +84,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     password: string;
   }) => {
     try {
+      console.log('Attempting registration for:', userData.email);
       const response = await authAPI.register(userData);
+      console.log('Registration response:', response);
       const { token: newToken, user: newUser } = response;
       
       localStorage.setItem('token', newToken);

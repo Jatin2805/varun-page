@@ -19,21 +19,34 @@ const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
   };
 
   try {
+    console.log(`Making API request to: ${API_BASE_URL}${endpoint}`);
     const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
     
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: 'Network error' }));
-      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch {
+        errorData = { message: `HTTP error! status: ${response.status}` };
+      }
+      throw new Error(errorData.message || `Request failed with status ${response.status}`);
     }
     
     const data = await response.json();
+    console.log('API response:', data);
     return data;
   } catch (error) {
     console.error('API Request Error:', error);
+    
     if (error instanceof TypeError && error.message.includes('fetch')) {
-      throw new Error('Unable to connect to server. Please check if the server is running.');
+      throw new Error('Unable to connect to server. Please ensure the server is running on http://localhost:5000');
     }
-    throw error;
+    
+    if (error instanceof Error) {
+      throw error;
+    }
+    
+    throw new Error('An unexpected error occurred');
   }
 };
 

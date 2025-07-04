@@ -17,6 +17,8 @@ const generateToken = (id) => {
 // @access  Public
 router.post('/register', async (req, res) => {
   try {
+    console.log('Registration request received:', { ...req.body, password: '[HIDDEN]' });
+    
     const { firstName, lastName, email, password } = req.body;
 
     // Validate required fields
@@ -55,6 +57,8 @@ router.post('/register', async (req, res) => {
     // Generate token
     const token = generateToken(user._id);
 
+    console.log('User registered successfully:', user.email);
+    
     res.status(201).json({
       success: true,
       token,
@@ -80,6 +84,8 @@ router.post('/register', async (req, res) => {
 // @access  Public
 router.post('/login', async (req, res) => {
   try {
+    console.log('Login request received for:', req.body.email);
+    
     const { email, password } = req.body;
 
     // Validate required fields
@@ -115,6 +121,8 @@ router.post('/login', async (req, res) => {
     // Generate token
     const token = generateToken(user._id);
 
+    console.log('User logged in successfully:', user.email);
+    
     res.json({
       success: true,
       token,
