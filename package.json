@@ -7,10 +7,13 @@
     "dev": "vite",
     "dev:full": "concurrently \"npm run server\" \"npm run dev\"",
     "server": "cd server && nodemon server.js",
+    "server:debug": "cd server && node --inspect server.js",
     "seed:templates": "cd server && node seeders/templates.js",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:api": "node scripts/test-api.js",
+    "debug:env": "node scripts/debug-env.js"
   },
   "dependencies": {
     "@types/react-beautiful-dnd": "^13.1.8",

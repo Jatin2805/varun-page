@@ -1,11 +1,28 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Environment-based API URL configuration
+const getApiBaseUrl = () => {
+  // In development, try environment variable first, then fallback
+  if (import.meta.env.DEV) {
+    return import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  }
+  
+  // In production, use environment variable or relative path
+  return import.meta.env.VITE_API_URL || '/api';
+};
+
+const API_BASE_URL = getApiBaseUrl();
+
+// Debug logging
+console.log('🔧 API Configuration:');
+console.log('Environment:', import.meta.env.MODE);
+console.log('API Base URL:', API_BASE_URL);
+console.log('VITE_API_URL:', import.meta.env.VITE_API_URL);
 
 // Get auth token from localStorage
 const getAuthToken = () => {
   return localStorage.getItem('token');
 };
 
-// API request helper
+// API request helper with enhanced error handling
 const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
   const token = getAuthToken();
   
@@ -18,35 +35,89 @@ const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
     ...options,
   };
 
+  const fullUrl = `${API_BASE_URL}${endpoint}`;
+
   try {
-    console.log(`Making API request to: ${API_BASE_URL}${endpoint}`);
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+    console.log(`🌐 Making API request to: ${fullUrl}`);
+    console.log('Request config:', {
+      method: config.method || 'GET',
+      headers: config.headers,
+      body: config.body ? 'Present' : 'None'
+    });
+
+    const response = await fetch(fullUrl, config);
+    
+    console.log(`📡 Response status: ${response.status} ${response.statusText}`);
     
     if (!response.ok) {
       let errorData;
       try {
         errorData = await response.json();
-      } catch {
-        errorData = { message: `HTTP error! status: ${response.status}` };
+        console.log('❌ Error response data:', errorData);
+      } catch (parseError) {
+        console.log('❌ Failed to parse error response:', parseError);
+        errorData = { 
+          message: `HTTP error! status: ${response.status}`,
+          status: response.status,
+          statusText: response.statusText
+        };
       }
+      
       throw new Error(errorData.message || `Request failed with status ${response.status}`);
     }
     
     const data = await response.json();
-    console.log('API response:', data);
+    console.log('✅ API response:', data);
     return data;
-  } catch (error) {
-    console.error('API Request Error:', error);
     
+  } catch (error) {
+    console.error('🚨 API Request Error:', error);
+    
+    // Network/Connection errors
     if (error instanceof TypeError && error.message.includes('fetch')) {
-      throw new Error('Unable to connect to server. Please ensure the server is running on http://localhost:5000');
+      const networkError = new Error(
+        `Unable to connect to server at ${API_BASE_URL}. Please ensure:\n` +
+        `1. Backend server is running on http://localhost:5000\n` +
+        `2. No firewall is blocking the connection\n` +
+        `3. CORS is properly configured`
+      );
+      networkError.name = 'NetworkError';
+      throw networkError;
     }
     
+    // CORS errors
+    if (error instanceof TypeError && error.message.includes('CORS')) {
+      const corsError = new Error(
+        'CORS error detected. Please check:\n' +
+        '1. Server CORS configuration\n' +
+        '2. Frontend origin is allowed\n' +
+        '3. Preflight requests are handled'
+      );
+      corsError.name = 'CORSError';
+      throw corsError;
+    }
+    
+    // Re-throw known errors
     if (error instanceof Error) {
       throw error;
     }
     
-    throw new Error('An unexpected error occurred');
+    // Unknown errors
+    throw new Error('An unexpected error occurred during API request');
+  }
+};
+
+// Test API connection
+export const testConnection = async () => {
+  try {
+    console.log('🔍 Testing API connection...');
+    const response = await fetch(`${API_BASE_URL.replace('/api', '')}/api/health`);
+    const data = await response.json();
+    console.log('✅ API connection test successful:', data);
+    return { success: true, data };
+  } catch (error) {
+    console.error('❌ API connection test failed:', error);
+    return { success: false, error: error.message };
   }
 };
 
