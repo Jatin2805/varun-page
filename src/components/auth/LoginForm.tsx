@@ -21,10 +21,18 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode }) => {
     setLoading(true);
     setError('');
 
+    // Basic validation
+    if (!email || !password) {
+      setError('Please fill in all fields');
+      setLoading(false);
+      return;
+    }
+
     try {
       await login(email, password);
     } catch (err: any) {
-      setError(err.message || 'Login failed');
+      console.error('Login error:', err);
+      setError(err.message || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }

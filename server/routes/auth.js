@@ -19,6 +19,22 @@ router.post('/register', async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
 
+    // Validate required fields
+    if (!firstName || !lastName || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide all required fields'
+      });
+    }
+
+    // Validate password length
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 6 characters long'
+      });
+    }
+
     // Check if user exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -51,6 +67,7 @@ router.post('/register', async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Registration error:', error);
     res.status(500).json({
       success: false,
       message: error.message
@@ -64,6 +81,14 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    // Validate required fields
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide email and password'
+      });
+    }
 
     // Check for user
     const user = await User.findOne({ email }).select('+password');
@@ -102,6 +127,7 @@ router.post('/login', async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Login error:', error);
     res.status(500).json({
       success: false,
       message: error.message

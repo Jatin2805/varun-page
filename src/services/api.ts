@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // Get auth token from localStorage
 const getAuthToken = () => {
@@ -18,14 +18,23 @@ const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
     ...options,
   };
 
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || 'Something went wrong');
+  try {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Network error' }));
+      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('API Request Error:', error);
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Unable to connect to server. Please check if the server is running.');
+    }
+    throw error;
   }
-
-  return data;
 };
 
 // Auth API

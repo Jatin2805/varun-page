@@ -33,6 +33,19 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode }) => {
     setLoading(true);
     setError('');
 
+    // Basic validation
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
+      setError('Please fill in all fields');
+      setLoading(false);
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      setLoading(false);
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       setLoading(false);
@@ -47,7 +60,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode }) => {
         password: formData.password
       });
     } catch (err: any) {
-      setError(err.message || 'Registration failed');
+      console.error('Registration error:', err);
+      setError(err.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
