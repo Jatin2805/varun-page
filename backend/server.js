@@ -14,7 +14,7 @@ import templateRoutes from './routes/templates.js';
 import userRoutes from './routes/users.js';
 
 // Load environment variables
-dotenv.config({ path: '../.env' });
+dotenv.config({ path: '.env' });
 
 // Connect to database
 connectDB();
