@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useAuth } from '../../contexts/AuthContext';
 import { 
   Menu, 
   Search, 
@@ -7,7 +8,8 @@ import {
   User, 
   Settings,
   HelpCircle,
-  ChevronDown
+  ChevronDown,
+  LogOut
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -16,6 +18,8 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onMenuClick, sidebarOpen }) => {
+  const { user, logout } = useAuth();
+
   return (
     <motion.header 
       initial={{ y: -20, opacity: 0 }}
@@ -62,15 +66,27 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, sidebarOpen }) => {
             <HelpCircle className="h-5 w-5 text-slate-600" />
           </motion.button>
 
-          <div className="flex items-center space-x-3 bg-slate-100 rounded-xl px-3 py-2 hover:bg-slate-200 transition-colors duration-200 cursor-pointer">
-            <div className="h-8 w-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <User className="h-4 w-4 text-white" />
+          <div className="relative group">
+            <div className="flex items-center space-x-3 bg-slate-100 rounded-xl px-3 py-2 hover:bg-slate-200 transition-colors duration-200 cursor-pointer">
+              <div className="h-8 w-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <User className="h-4 w-4 text-white" />
+              </div>
+              <div className="hidden md:block">
+                <p className="text-sm font-medium text-slate-700">{user?.firstName} {user?.lastName}</p>
+                <p className="text-xs text-slate-500">{user?.plan} Plan</p>
+              </div>
+              <ChevronDown className="h-4 w-4 text-slate-500" />
             </div>
-            <div className="hidden md:block">
-              <p className="text-sm font-medium text-slate-700">John Doe</p>
-              <p className="text-xs text-slate-500">Pro Plan</p>
+            
+            <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <button
+                onClick={logout}
+                className="w-full flex items-center space-x-2 px-4 py-3 text-left hover:bg-slate-50 rounded-xl transition-colors duration-200"
+              >
+                <LogOut className="h-4 w-4 text-slate-500" />
+                <span className="text-slate-700">Sign Out</span>
+              </button>
             </div>
-            <ChevronDown className="h-4 w-4 text-slate-500" />
           </div>
         </div>
       </div>
