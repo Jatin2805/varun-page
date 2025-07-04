@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "vite",
     "dev:full": "concurrently \"npm run server\" \"npm run dev\"",
-    "server": "cd server && nodemon server.js",
-    "server:debug": "cd server && node --inspect server.js",
-    "seed:templates": "cd server && node seeders/templates.js",
+    "server": "cd backend && nodemon server.js",
+    "server:debug": "cd backend && node --inspect server.js",
+    "seed:templates": "cd backend && node seeders/seedData.js",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
